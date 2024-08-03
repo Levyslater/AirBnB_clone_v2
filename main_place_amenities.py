@@ -19,7 +19,6 @@ city.save()
 # creation of a User
 user = User(email="john@snow.com", password="johnpwd")
 user.save()
-storage.save()
 # creation of 2 Places
 place_1 = Place(user_id=user.id, city_id=city.id, name="House 1")
 place_1.save()
