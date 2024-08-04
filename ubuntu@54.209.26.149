@@ -1,40 +1,32 @@
-#!/usr/bin/env bash
-# Sets up your web servers for the deployment of web_static
+#!/usr/bin/python3
+"""
+Fabric script to generate a tgz archive
+execute: fab -f 1-pack_web_static.py do_pack
+"""
 
-# Update package list and install Nginx
-sudo apt-get update
-sudo apt-get -y install nginx
+from datetime import datetime
+from fabric.api import local
 
-# Allow Nginx HTTP through the firewall
-sudo ufw allow 'Nginx HTTP'
 
-# Create necessary directories including parent folders
-sudo mkdir -p /data/web_static/releases/test/
-sudo mkdir -p /data/web_static/shared/
+def do_pack():
+    """
+    Generate a .tgz archive from the contents of the web_static folder
+    """
 
-# Create a test HTML file in the releases/test directory
-sudo tee /data/web_static/releases/test/index.html > /dev/null <<EOF
-<html>
-  <head>
-  </head>
-  <body>
-    Holberton School
-  </body>
-</html>
-EOF
-
-# Create a symbolic link to the test release
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
-
-# Change ownership of the /data/ directory to the ubuntu user and group
-sudo chown -R ubuntu:ubuntu /data/
-
-# Remove existing hbnb_static configuration if it exists to prevent duplicates
-sudo sed -i '/location \/hbnb_static {/,/}/d' /etc/nginx/sites-enabled/default
-
-# Update the Nginx configuration to serve the content of web_static
-sudo sed -i '/listen 80 default_server;/a \\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-enabled/default
-
-# Restart the Nginx service to apply the changes
-sudo service nginx restart
+    # Get the current time
+    time = datetime.now()
+    # Create the archive name using the current timestamp
+    archive = 'web_static_' + time.strftime("%Y%m%d%H%M%S") + '.tgz'
+    
+    # Create the versions directory if it doesn't exist
+    local('mkdir -p versions')
+    
+    # Create the .tgz archive
+    create = local('tar -cvzf versions/{} web_static'.format(archive))
+    
+    # Check if the archive was created successfully
+    if create.succeeded:
+        return 'versions/' + archive
+    else:
+        return None
 
