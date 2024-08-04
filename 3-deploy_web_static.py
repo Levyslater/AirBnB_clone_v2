@@ -105,10 +105,9 @@ def deploy():
     archive_path = do_pack()
     if archive_path is None:
         return False
-    
+
     # Check if it's running on a remote server or locally
     if 'localhost' in env.hosts or '127.0.0.1' in env.hosts:
         return do_local_deploy(archive_path)
     else:
         return do_deploy(archive_path)
-

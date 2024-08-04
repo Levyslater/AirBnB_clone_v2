@@ -24,29 +24,28 @@ def do_deploy(archive_path):
 
         # Upload the archive to the /tmp/ directory on the remote servers
         put(archive_path, '/tmp/')
-        
+
         # Create a directory for the new release
         run('mkdir -p {}{}/'.format(path, no_ext))
-        
+
         # Uncompress the archive into the newly created directory
         run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
-        
+
         # Remove the archive from the /tmp/ directory
         run('rm /tmp/{}'.format(file_n))
-        
+
         # Move the content of the web_static folder to its parent directory
         run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
-        
+
         # Remove the now empty web_static folder
         run('rm -rf {}{}/web_static'.format(path, no_ext))
-        
+
         # Remove the existing symbolic link
         run('rm -rf /data/web_static/current')
-        
+
         # Create a new symbolic link pointing to the new release
         run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
-        
-        return True
-    except:
-        return False
 
+        return True
+    except syntaxError:
+        return False

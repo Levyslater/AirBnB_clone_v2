@@ -17,16 +17,15 @@ def do_pack():
     time = datetime.now()
     # Create the archive name using the current timestamp
     archive = 'web_static_' + time.strftime("%Y%m%d%H%M%S") + '.tgz'
-    
+
     # Create the versions directory if it doesn't exist
     local('mkdir -p versions')
-    
+
     # Create the .tgz archive
     create = local('tar -cvzf versions/{} web_static'.format(archive))
-    
+
     # Check if the archive was created successfully
     if create.succeeded:
         return 'versions/' + archive
     else:
         return None
-
