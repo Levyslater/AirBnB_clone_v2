@@ -10,6 +10,7 @@ from models.amenity import Amenity
 
 app = Flask(__name__)
 
+
 @app.teardown_appcontext
 def storage_close(exception):
     """
@@ -17,15 +18,18 @@ def storage_close(exception):
     """
     storage.close()
 
+
 @app.route('/hbnb_filters', strict_slashes=False)
 def hbnb_filters():
     """
-    Display a HTML page like 6-index.html, with States, Cities, and Amenities
+    Display a HTML page like 6-index.html,
+    with States, Cities, and Amenities
     """
     states = storage.all(State).values()
     amenities = storage.all(Amenity).values()
-    return render_template('10-hbnb_filters.html', states=states, amenities=amenities)
+    return render_template('10-hbnb_filters.html',
+                           states=states, amenities=amenities)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-                                                                                                                                      

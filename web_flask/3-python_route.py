@@ -7,6 +7,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route('/', strict_slashes=False)
 def home():
     """
@@ -34,7 +35,8 @@ def C_with_params(text):
     strip_underscore = text.replace('_', ' ')
     return f'C {strip_underscore}'
 
-@app.route('/python', defaults={'text':' is_cool'}, strict_slashes=False)
+
+@app.route('/python', defaults={'text ': 'is_cool'}, strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
 def python_with_params(text):
     """
