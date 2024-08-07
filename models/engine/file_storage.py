@@ -9,6 +9,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
@@ -16,14 +17,17 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage
-        If cls is provided, only objects of that class are returned
+        If cls is provided, only objects of that
+        class are returned
         """
-        objects = self.__objects.copy()  # prevent modifying original __objects dictionary
+        # prevent modifying original __objects dictionary
+        objects = self.__objects.copy()
         if cls:
             if isinstance(cls, str):
                 cls = globals().get(cls)
             if cls and issubclass(cls, BaseModel):
-                return {key: value for key, value in objects.items() if isinstance(value, cls)}
+                return ({key: value for key, value in objects.items()
+                         if isinstance(value, cls)})
         else:
             return FileStorage.__objects
 
@@ -53,14 +57,21 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
-    def delete(self, obj=None):
-        """Removes object from storage dictionary"""
-        if obj:
-            key = obj.to_dict()['__class__'] + '.' + obj.id
-            if key in self.all():
-                del self.all()[key]
-        else:
-            return
+
+        def delete(self, obj=None):
+            """Removes object from storage dictionary"""
+            if obj:
+                key = obj.to_dict()['__class__'] + '.' + obj.id
+                if key in self.all():
+                    del self.all()[key]
+            else:
+                return
+
+        def close(self):
+            """
+            closes the database
+            """
+            self.reload()

@@ -11,10 +11,11 @@ from models.user import User
 from models.amenity import Amenity
 from models.review import Review  # Ensure all models are imported
 
+
 class DBStorage:
     """
     Database storage engine for MySQL storage in the HBNB project.
-    
+
     Attributes:
         __engine: SQLAlchemy engine.
         __session: SQLAlchemy scoped session.
@@ -41,12 +42,12 @@ class DBStorage:
     def all(self, cls=None):
         """
         Queries all objects of a given class or all classes if cls is None.
-        
         Args:
-            cls (class or str): The class to query objects from, or None to query all classes.
-        
+            cls (class or str): The class to query objects from,
+            or None to query all classes.
         Returns:
-            dict: A dictionary of queried objects, with keys in the format <class name>.<object id>.
+            dict: A dictionary of queried objects,
+            with keys in the format <class name>.<object id>.
         """
         obj_lst = []
         if cls:
@@ -60,14 +61,14 @@ class DBStorage:
         else:
             for subclass in Base.__subclasses__():
                 obj_lst.extend(self.__session.query(subclass).all())
-        
-        obj_dct = {"{}.{}".format(obj.__class__.__name__, obj.id): obj for obj in obj_lst}
+
+        obj_dct = {"{}.{}".format(obj.__class__.__name__,
+                                  obj.id): obj for obj in obj_lst}
         return obj_dct
-    
+
     def new(self, obj):
         """
         Adds a new object to the current database session.
-        
         Args:
             obj: The object to add.
         """
@@ -82,7 +83,6 @@ class DBStorage:
     def delete(self, obj=None):
         """
         Deletes an object from the current database session.
-        
         Args:
             obj: The object to delete, or None to do nothing.
         """
@@ -91,9 +91,17 @@ class DBStorage:
 
     def reload(self):
         """
-        Creates all tables in the database and initializes the session.
+        Creates all tables in the database and initializes the
+        session.
         """
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def close(self):
+        """
+        Closes the database session.
+        """
+        self.__session.close()
