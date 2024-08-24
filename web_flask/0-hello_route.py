@@ -8,8 +8,8 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes=False)
-def home():
+@app.route('/airbnb-onepage/', strict_slashes=False)
+def index():
     """
     Home route that returns a simple greeting.
     """
